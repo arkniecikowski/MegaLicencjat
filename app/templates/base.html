@@ -18,15 +18,22 @@
 </head>
 <body>
  <div>
-        Microblog:
+        Menu1:
         <a href="{{ url_for('index') }}">Home</a>
         {% if current_user.is_anonymous %}
         <a href="{{ url_for('login') }}">Login</a>
         {% else %}
-        <a href="{{ url_for('logout') }}">Logout</a>
+        <a href="{{ url_for('user', username=current_user.username) }}">Profil</a>
+        <a href="{{ url_for('logout') }}">Wyloguj</a>
         {% endif %}
     </div>
     <hr>
+    <div>
+        Menu2:
+        <a href="{{ url_for('indexx') }}">Wszystkie pliki</a>
+        <a href="{{ url_for('indexx') }}">Pliki kontrolowane GIT</a>
+        <a href="{{ url_for('indexx') }}">Udostępnione</a>
+    </div>
  {% with messages = get_flashed_messages() %}
         {% if messages %}
         <ul>

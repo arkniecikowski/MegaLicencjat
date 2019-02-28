@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, session, escape
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
@@ -10,29 +10,38 @@ from flask_autoindex import AutoIndex
 
 
 
-files_index = AutoIndex(app, os.path.curdir + '/app/zapis', add_url_rules=False)
-@app.route('/asd')
-@app.route('/asd <path:path>')
+
+
+files_index = AutoIndex(app, os.path.curdir + '/app/', add_url_rules=False)
+@app.route('/asd/')
+@app.route('/asd/<path:path>')
 def autoindex(path='.'):
     return files_index.render_autoindex(path)
+
+
+
+@app.route('/user/<username>')
+@login_required
+def user(username):
+    posts = [
+        {'author': user, 'body': 'Test post #1'},
+        {'author': user, 'body': 'Test post #2'}
+    ]
+    return render_template('user.html', user=user, posts=posts)
+
 
 
 @app.route('/')
 @app.route('/index')
 @login_required
 def index():
-    posts = [
-        {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        }
-    ]
-    return render_template('index.html', title='Home', posts=posts)
+    return render_template('index.html')
 
+
+@app.route('/indexx')
+@login_required
+def indexx():
+    return render_template('index.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -47,8 +56,9 @@ def login():
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
+        session['username'] = user.username
         if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('index')
+            next_page = url_for('index',form=form)
         return redirect(next_page)
     return render_template('login.html', title='Sign In', form=form)
 
