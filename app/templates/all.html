@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% from "__autoindex__/macros.html" import entry, thead, breadcrumb with context %}
+
+
+
+{% block content %}
+
+
+ <h1>#Wszystkie Pliki</h1>
+
+    {% block aside %}
+    <div style="width: 600px; margin: 30px auto;">
+    <h2>My apka</h2>
+    {% endblock %}
+
+    {% block table %}
+    <table>
+      <thead>
+        {{ thead() }}
+        {% if not curdir.is_root() %}
+          <tr>
+            <td class="breadcrumb" colspan="4">
+              <h1>{{ breadcrumb(curdir) }}</h1>
+            </td>
+          </tr>
+        {% endif %}
+      </thead>
+
+      <tbody>
+        {% for ent in entries %}
+          {{ entry(ent) }}
+        {% endfor %}
+      </tbody>
+
+    </table>
+    {% endblock %}
+
+{% endblock %}
+
+
+
