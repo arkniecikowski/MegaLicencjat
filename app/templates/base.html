@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,19 +6,15 @@
     {% if title %}
     <title>{{ title }} - Microblog</title>
     {% else %}
-    <title>Witaj na Microblogu</title> {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul>
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
+    <title>Witaj na Microblogu</title>
     {% endif %}
+
+
+
 </head>
 <body>
- <div>
+
+    <div>
         Menu1:
         <a href="{{ url_for('index') }}">Home</a>
         {% if current_user.is_anonymous %}
@@ -27,14 +24,19 @@
         <a href="{{ url_for('logout') }}">Wyloguj</a>
         {% endif %}
     </div>
+
     <hr>
+
     <div>
         Menu2:
-        <a href="{{ url_for('indexx') }}">Wszystkie pliki</a>
+        <a href="{{ url_for('autoindex') }}">Wszystkie pliki</a>
         <a href="{{ url_for('indexx') }}">Pliki kontrolowane GIT</a>
         <a href="{{ url_for('indexx') }}">Udostępnione</a>
     </div>
- {% with messages = get_flashed_messages() %}
+
+    <hr>
+
+    {% with messages = get_flashed_messages() %}
         {% if messages %}
         <ul>
             {% for message in messages %}
@@ -43,6 +45,11 @@
         </ul>
         {% endif %}
         {% endwith %}
+
+
+
+
+
     {% block content %}
 
     {% endblock %}

@@ -1,11 +1,14 @@
 {% macro entry(ent) %}
-  <tr>
+
+    <tr>
     {% set icon = ent.guess_icon() %}
-    <td class="icon">
+
+        <td class="icon">
       {% if icon %}
         <img src="{{ icon }}" />
       {% endif %}
-    </td>
+        </td>
+
     <td class="name">
       <a href="{{ url_for(endpoint, path=ent.path) }}">
       {%- if ent.name == ".." -%}
@@ -14,16 +17,20 @@
         {{ ent.name }}
       {%- endif -%}
     </a></td>
-    <td class="modified">
+
+        <td class="modified">
       <time datetime="{{ ent.modified }}">{{ ent.modified }}</time>
-    </td>
-    <td class="size">
+
+        </td>
+
+        <td class="size">
       {% if ent.size %}
         {{ ent.size|filesizeformat }}
       {% else %}
-        -
+
       {% endif %}
-    </td>
+        </td>
+
   </tr>
 {% endmacro %}
 
