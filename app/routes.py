@@ -4,6 +4,7 @@ from flask import render_template, flash, redirect, url_for, request, session, e
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from werkzeug.utils import secure_filename
+from wtforms import TextField
 from app import app, db
 from app.forms import LoginForm, RegistrationForm
 from app.models import User
@@ -11,25 +12,47 @@ import os
 import os.path
 from flask_autoindex import AutoIndex
 
-UPLOAD_FOLDER = '/app'
-
 
 files_index = AutoIndex(app, os.path.curdir + '/app/zapis', add_url_rules=False)
 
-@app.route('/asd/')
-@app.route('/asd/<path:path>')
-def autoindex(path='.'):
-    fx = files_index.render_autoindex(path)
-    return fx
+@app.route('/asd/',methods = ['POST', 'GET'])
+@app.route('/asd/<path:path>',methods = ['POST', 'GET'])
+@login_required
+def autoindex(path=''):
 
-@app.route('/upload/',methods = ['GET','POST'])
-def upload_file():
     if request.method =='POST':
         file = request.files['file']
+        if file.filename == '':
+            return redirect(request.url)
+        if file:
+            UPLOAD_FOLDER = 'app/zapis/' + session['username'] +"/"+path
+            app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
+            return redirect(request.url)
+
+    return files_index.render_autoindex(path,os.path.curdir + '/app/zapis/' + session['username'])
+
+@app.route('/makefolder',methods=['GET','POST'])
+def makefolder():
+    if request.method == 'POST':
+        text = request.form['Text']
+        flash(text)
+        return redirect(request.url)
+    return render_template('makefolder.html')
+
+
+@app.route('/up',methods=['POST','GET'])
+def up():
+    if request.method =='POST':
+        file = request.files['file']
+        if file.filename == '':
+            return redirect(request.url)
         if file:
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
             return redirect(request.url)
+
     return render_template('upload.html')
 
 @app.route('/user/<username>')
@@ -54,7 +77,6 @@ def indexx():
     return render_template('index.html')
 
 
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -67,6 +89,7 @@ def login():
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
+        session['username'] = request.form['username']
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index',form=form)
         return redirect(next_page)

@@ -11,6 +11,17 @@
     {% block aside %}
     <div style="width: 600px; margin: 30px auto;">
     <h2>My apka</h2>
+
+    <form action='' method=post enctype="multipart/form-data">
+    <p><input type='file' name='file' multiple=''>
+    <input type='submit' value='upload'></p>
+    </form>
+
+    <form action="" method="post" novalidate>
+        <input type='text'  name='textMakeFolder' multiple=''>
+        <input type='submit' value='Stworz folder'>
+    </form>
+
     {% endblock %}
 
     {% block table %}
@@ -25,15 +36,14 @@
           </tr>
         {% endif %}
       </thead>
-
       <tbody>
         {% for ent in entries %}
           {{ entry(ent) }}
         {% endfor %}
       </tbody>
-
     </table>
     {% endblock %}
+
 
 {% endblock %}
 
