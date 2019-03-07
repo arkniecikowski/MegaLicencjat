@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     {% if title %}
-    <title>{{ title }} - Microblog</title>
+    <title>{{ title }} - Projekt lic</title>
     {% else %}
-    <title>Witaj na Microblogu</title> {% with messages = get_flashed_messages() %}
+    <title>Projekt lic</title> {% with messages = get_flashed_messages() %}
         {% if messages %}
         <ul>
             {% for message in messages %}
@@ -15,6 +15,8 @@
         {% endif %}
         {% endwith %}
     {% endif %}
+
+
 
 </head>
 

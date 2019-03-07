@@ -1,7 +1,7 @@
 {% extends "baseLobby.html" %}
 
 {% block content %}
-     <p>New User? <a href="{{ url_for('register') }}">Click to Register!</a></p>
+     <p>Nowy użytkownik? <a href="{{ url_for('register') }}">Zarejestruj się!</a></p>
     <h1>Zaloguj</h1>
      <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}

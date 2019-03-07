@@ -1,40 +1,53 @@
+
 {% macro entry(ent) %}
 
     <tr>
+         <td class="lp">
+             <input form="usunID" type="hidden" name="hiddenName" value="hiddenValue">
+             <input form="usunID" type="text" name="tekstN" value="tekstV">
+            <input form="usunID" type="checkbox" name="ZZZZZZZZZZZZZZZZZZZZZZZZ" value="AAAAAAAAAAAAAAAAAAAAA" />
+        </td>
+
     {% set icon = ent.guess_icon() %}
 
+
         <td class="icon">
-      {% if icon %}
-        <img src="{{ icon }}" />
-      {% endif %}
+          {% if icon %}
+            <img src="{{ icon }}" />
+          {% endif %}
         </td>
 
-    <td class="name">
-      <a href="{{ url_for(endpoint, path=ent.path) }}">
-      {%- if ent.name == ".." -%}
-        Parent folder
-      {%- else -%}
-        {{ ent.name }}
-      {%- endif -%}
-    </a></td>
+        <td class="name">
+          <a href="{{ url_for(endpoint, path=ent.path) }}">
+              {%- if ent.name == ".." -%}
+                Parent folder
+              {%- else -%}
+                {{ ent.name }}
+              {%- endif -%}
+          </a>
+        </td>
 
         <td class="modified">
-      <time datetime="{{ ent.modified }}">{{ ent.modified }}</time>
-
+            <time datetime="{{ ent.modified }}">{{ ent.modified }}</time>
         </td>
 
-        <td class="size">
-      {% if ent.size %}
-        {{ ent.size|filesizeformat }}
-      {% else %}
 
-      {% endif %}
+        <td class="size">
+          {% if ent.size %}
+            {{ ent.size|filesizeformat }}
+          {% else %}
+          {% endif %}
         </td>
 
   </tr>
 {% endmacro %}
 
+{% macro wp(key) %}
+
+{%  endmacro %}
+
 {% macro th(key, label, colspan=1) %}
+
   <th class="{{ key }}" colspan="{{ colspan }}">
     {%- if sort_by == key and order > 0 -%}
       <a href="?sort_by={{ key }}&amp;order=desc">{{ label }}</a>
@@ -49,10 +62,15 @@
       {%- endif -%}
     {%- endif -%}
   </th>
+
+
+
+
 {% endmacro %}
 
 {% macro thead() %}
   <tr>
+    {{ th("lp", "lp") }}
     {{ th("name", "Name", 2) }}
     {{ th("modified", "Last modified") }}
     {{ th("size", "Size") }}

@@ -4,10 +4,7 @@
   border: none;
 }
 
-body, table {
-  font-family: Helvetica, Arial, sans-serif;
-  font-size: 14px;
-}
+
 
 a:link, a:visited {
   text-decoration: none;
@@ -60,10 +57,11 @@ a:hover {
   margin: 0 -10px 1em;
   border-left: 1px solid #cde;
 }
+
 #readme blockquote :last-child {
   margin-bottom: 0;
 }
-#readme h1 { font-size: 1.5em; }
+#readme h1 { font-size: 4.5em; }
 #readme h2 { font-size: 1.4em; }
 #readme h3 { font-size: 1.3em; }
 #readme h4 { font-size: 1.2em; }
@@ -94,7 +92,7 @@ a:hover {
 
 table {
   border-collapse: collapse;
-  width: 100%;
+  width: 200%;
   background: #fff;
 }
 thead {

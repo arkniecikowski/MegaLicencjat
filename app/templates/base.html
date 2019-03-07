@@ -4,18 +4,22 @@
 <head>
     <meta charset="UTF-8">
     {% if title %}
-    <title>{{ title }} - Microblog</title>
+    <title>{{ title }} - Tytuł projektu....</title>
     {% else %}
-    <title>Witaj na Microblogu</title>
+    <title> Tytuł projektu....</title>
     {% endif %}
 
+
+{% block meta %}
+    <link rel="stylesheet" type="text/css" href="../static/autoindex.css">
+  {% endblock %}
 
 </head>
 <body>
 
     <div>
         Menu1:
-        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('index') }}">Strona główna</a>
         {% if current_user.is_anonymous %}
         <a href="{{ url_for('login') }}">Login</a>
         {% else %}
@@ -29,8 +33,8 @@
     <div>
         Menu2:
         <a href="{{ url_for('autoindex') }}">Wszystkie pliki</a>
-        <a href="{{ url_for('indexx') }}">Pliki kontrolowane GIT</a>
-        <a href="{{ url_for('indexx') }}">Udostępnione</a>
+        <a href="{{ url_for('index') }}">Pliki kontrolowane GIT</a>
+        <a href="{{ url_for('index') }}">Udostępnione</a>
     </div>
 
     <hr>

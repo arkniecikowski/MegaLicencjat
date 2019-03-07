@@ -4,9 +4,8 @@ from flask import render_template, flash, redirect, url_for, request, session, e
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from werkzeug.utils import secure_filename
-from wtforms import TextField
 from app import app, db
-from app.forms import LoginForm, RegistrationForm
+from app.forms import LoginForm, RegistrationForm,makeF,delF
 from app.models import User
 import os
 import os.path
@@ -20,6 +19,23 @@ files_index = AutoIndex(app, os.path.curdir + '/app/zapis', add_url_rules=False)
 @login_required
 def autoindex(path=''):
 
+    form = makeF()
+    if form.validate_on_submit():
+        dirName = 'app/zapis/' +session['username']+'/'+ path+'/'+form.tekst.data
+        try:
+            os.mkdir(dirName)
+            print("Directory ", dirName, " Created ")
+        except FileExistsError:
+            print("Directory ", dirName, " already exists")
+        return redirect(request.url)
+
+
+#    form2 = delF()
+#    if form2.validate_on_submit() :
+#        print('dziala')
+#        return redirect(request.url)
+
+
     if request.method =='POST':
         file = request.files['file']
         if file.filename == '':
@@ -31,29 +47,29 @@ def autoindex(path=''):
             file.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
             return redirect(request.url)
 
-    return files_index.render_autoindex(path,os.path.curdir + '/app/zapis/' + session['username'])
+    print(request.method + "Metoda")
 
-@app.route('/makefolder',methods=['GET','POST'])
-def makefolder():
-    if request.method == 'POST':
-        text = request.form['Text']
-        flash(text)
-        return redirect(request.url)
-    return render_template('makefolder.html')
+    if request.method == 'GET':
+        print(request.form.get('hiddenName'))
+        UPLOAD_FOLDER = 'app/zapis/' + session['username'] + "/" + path
+        print(UPLOAD_FOLDER)
+        app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+        f = open(os.path.join(app.config['UPLOAD_FOLDER'],"nazwa"),"w+")
+        f.write("PLIK")
+        f.close()
+
+        form2 = delF()
+   #     if form2.validate_on_submit() || request.form.get('')
 
 
-@app.route('/up',methods=['POST','GET'])
-def up():
-    if request.method =='POST':
-        file = request.files['file']
-        if file.filename == '':
-            return redirect(request.url)
-        if file:
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
-            return redirect(request.url)
 
-    return render_template('upload.html')
+
+#       return redirect(request.url)
+
+
+    return files_index.render_autoindex(path,os.path.curdir + '/app/zapis/' + session['username'],template_context = dict(form=form))
+
+
 
 @app.route('/user/<username>')
 @login_required
@@ -71,10 +87,15 @@ def user(username):
 def index():
     return render_template('index.html')
 
-@app.route('/indexx')
+
+
+@app.route('/')
+@app.route('/checkb')
 @login_required
-def indexx():
-    return render_template('index.html')
+def checkb():
+    return render_template('checkbo.html')
+
+
 
 
 @app.route('/login', methods=['GET', 'POST'])
