@@ -1,7 +1,10 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from flask_wtf.file import FileField,FileRequired
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, Form,HiddenField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from app.models import User
+
+
 
 
 class LoginForm(FlaskForm):
@@ -18,6 +21,7 @@ class RegistrationForm(FlaskForm):
         'Repeat Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Register')
 
+
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
         if user is not None:
@@ -29,11 +33,9 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Please use a different email address.')
 
 
-class makeF(FlaskForm):
+class StworzFolderForm(Form):
+    tekst = StringField('Wpisz nazwę folderu')
 
-    tekst = StringField('text', validators=[DataRequired()])
-    submit = SubmitField('Stworz')
+class DodajPlikForm(FlaskForm):
+    plik = FileField()
 
-
-class delF(FlaskForm):
-    submit = SubmitField('Usun')

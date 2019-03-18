@@ -3,10 +3,10 @@
 
     <tr>
          <td class="lp">
-             <input form="usunID" type="hidden" name="hiddenName" value="hiddenValue">
-             <input form="usunID" type="text" name="tekstN" value="tekstV">
-            <input form="usunID" type="checkbox" name="ZZZZZZZZZZZZZZZZZZZZZZZZ" value="AAAAAAAAAAAAAAAAAAAAA" />
-        </td>
+             <label>
+                 <input  form="headerSecondForm" type="checkbox" onchange="CheckBoxClick('{{ ent.name }}')" name="checkName" value="{{ ent.name }}" autocomplete="off"/>
+             </label>
+         </td>
 
     {% set icon = ent.guess_icon() %}
 

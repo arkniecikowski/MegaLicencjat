@@ -3,71 +3,100 @@
 from flask import render_template, flash, redirect, url_for, request, session, escape
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
+from werkzeug.datastructures import CombinedMultiDict
 from werkzeug.utils import secure_filename
 from app import app, db
-from app.forms import LoginForm, RegistrationForm,makeF,delF
+from app.forms import LoginForm, RegistrationForm, StworzFolderForm, DodajPlikForm
 from app.models import User
 import os
+import shutil
+from os import path
 import os.path
 from flask_autoindex import AutoIndex
 
 
+def remove(path):
+    """ param <path> could either be relative or absolute. """
+    if os.path.isfile(path):
+        os.remove(path)  # remove the file
+    elif os.path.isdir(path):
+        shutil.rmtree(path)  # remove dir and all contains
+    else:
+        raise ValueError("file {} is not a file or dir.".format(path))
+
+
+
 files_index = AutoIndex(app, os.path.curdir + '/app/zapis', add_url_rules=False)
+
 
 @app.route('/asd/',methods = ['POST', 'GET'])
 @app.route('/asd/<path:path>',methods = ['POST', 'GET'])
 @login_required
 def autoindex(path=''):
 
-    form = makeF()
-    if form.validate_on_submit():
-        dirName = 'app/zapis/' +session['username']+'/'+ path+'/'+form.tekst.data
-        try:
-            os.mkdir(dirName)
-            print("Directory ", dirName, " Created ")
-        except FileExistsError:
-            print("Directory ", dirName, " already exists")
-        return redirect(request.url)
-
-
-#    form2 = delF()
-#    if form2.validate_on_submit() :
-#        print('dziala')
-#        return redirect(request.url)
-
-
-    if request.method =='POST':
-        file = request.files['file']
-        if file.filename == '':
-            return redirect(request.url)
-        if file:
-            UPLOAD_FOLDER = 'app/zapis/' + session['username'] +"/"+path
-            app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
-            return redirect(request.url)
-
-    print(request.method + "Metoda")
+    form = StworzFolderForm(request.form)
+    form2 = DodajPlikForm()
 
     if request.method == 'GET':
-        print(request.form.get('hiddenName'))
-        UPLOAD_FOLDER = 'app/zapis/' + session['username'] + "/" + path
-        print(UPLOAD_FOLDER)
-        app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-        f = open(os.path.join(app.config['UPLOAD_FOLDER'],"nazwa"),"w+")
-        f.write("PLIK")
-        f.close()
 
-        form2 = delF()
-   #     if form2.validate_on_submit() || request.form.get('')
+            if request.args.get('sub') == "Rename":
+
+                flash("ZMIEN_NAZWE")
+
+            if request.args.get('sub') == "Zmien":
+
+                flash("Zmienokokookokkokokokoko")
 
 
 
+    if request.method == 'POST' :
 
-#       return redirect(request.url)
+        if request.form['sub'] == "Usuń pliki":
+            listaDoU = request.form.getlist('checkName')
+            print(listaDoU)
+
+            for r in listaDoU:
+                wr = 'app/zapis/' + session['username'] + "/" + path + "/" + r
+                if os.path.exists(wr) or os.path.isdir(wr):
+                    remove(wr)
+
+        elif  request.form['sub'] == "Stworz folder" and form.tekst.data != None:
+
+            dirName = 'app/zapis/' +session['username']+'/'+ path+'/'+form.tekst.data
+            try:
+                os.mkdir(dirName)
+                print("Directory ", dirName, " Created ")
+            except FileExistsError:
+                print("Directory ", dirName, " already exists")
+            return redirect(request.url)
+
+        elif request.form['sub'] == "Dodaj plik" and form2.plik.data != None:
+
+            f = request.files['plik']
+            filename = secure_filename(f.filename)
+            UPLOAD_FOLDER = 'app/zapis/' + session['username'] + "/" + path
+            app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+            f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            print(request.url)
+            return redirect(request.url)
+
+        elif request.form['sub'] == "Zmien to nazwe":
+            t = request.form.get('modalRenameTextName')
+            ch = request.form.get("checkName")
+
+            src_ch = 'app/zapis/' +session['username']+'/'+ path+ch
+            src_t = 'app/zapis/' +session['username']+'/'+ path+t
+            try:
+                os.rename(src_ch,src_t)
+            except FileExistsError:
+                print('nie udalo sie zmienic nazwy')
+            return redirect(request.url)
 
 
-    return files_index.render_autoindex(path,os.path.curdir + '/app/zapis/' + session['username'],template_context = dict(form=form))
+
+    return files_index.render_autoindex(path,os.path.curdir + '/app/zapis/' + session['username'],template_context = dict(form=form,form2=form2))
+
+
 
 
 
